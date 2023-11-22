@@ -1,6 +1,7 @@
 library(tidyverse)
 library(grpreg)
 library(gtsummary)
+library(gt)
 source("functions.R")
 
 ### =====================================================================
@@ -162,6 +163,7 @@ refit.coef_mat <- get_rcoef(object)
 ## =====================================================
 ##               Visualization
 ## =====================================================
+item_names <- c("n", "p", "omega", "K", "cov_type")
 
 df_ord1 <- refit.coef_mat %>%
   filter(factor %in% tl[intr_order==2]) %>%
@@ -210,16 +212,15 @@ g1 <- df_fac %>%
   mutate(y=qnorm(ARI)) %>%
   ggplot(aes(x=n, y=y, color=method)) +
   geom_boxplot() + facet_grid(~p)
-ggsave(filename="image/aggplot_method_p_n.png", plot=g1, width=9, height=3)
 
 g2 <- df_fac %>%
   mutate(y=qnorm(ARI)) %>%
   ggplot(aes(x=K, y=y, color=method)) +
   geom_boxplot() + facet_grid(~p)
-ggsave(filename="image/aggplot_method_p_K.png", plot=g2, width=9, height=3)
 
 g3 <- df_fac %>%
   mutate(y=qnorm(ARI)) %>%
   ggplot(aes(x=cov_type, y=y, color=method)) +
   geom_boxplot() + facet_grid(~p)
-ggsave(filename="image/aggplot_method_p_cov_type.png", plot=g3, width=9, height=3)
+
+gridExtra::grid.arrange(g1, g2, g3, ncol=1)
